@@ -1,3 +1,5 @@
+Folder structure for Full stack development
+
 project-root/
 │
 ├── config/                  # Configuration files (db, environment, etc.)
