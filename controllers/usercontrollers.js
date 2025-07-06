@@ -74,16 +74,43 @@ const userUpdate = async (req, res) => {
 
 
 const userDelete = async (req, res) => {
-    const {id} = req.params;
-    const user = await User.findByIdAndDelete(id);
-    res.status(200).json(user);
-}   
+  const { id } = req.params; // this is the custom userId like 5
+
+  try {
+    // 🔍 Delete based on your custom userId field (Number)
+    const user = await User.findOneAndDelete({ userId: id });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({ message: "User deleted successfully", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting user", error });
+  }
+};
+
 
 const userReadById = async (req, res) => {
-    const {id} = req.params;
-    const user = await User.findById(id);
+  const { id } = req.params;
+
+  try {
+    // Try both userId and customId
+    const user = await User.findOne({           // findbyid() is only used to Read by MongoDB’s _id field only
+      $or: [
+        { userId: id }, 
+        { customId: id }
+      ]
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     res.status(200).json(user);
-}
+  } catch (error) {
+    res.status(500).json({ message: "Failed to load user", error });
+  }
+};
+
 
 const userReadByEmail = async (req, res) => {
     const {email} = req.params;
@@ -99,4 +126,4 @@ const userReadByPhone = async (req, res) => {
 
 
 
-module.exports = {userInsert, userRead, userUpdate, userDelete, userReadById, userReadByEmail};
+module.exports = {userInsert, userRead, userUpdate, userDelete, userReadById, userReadByEmail, userReadByPhone};
