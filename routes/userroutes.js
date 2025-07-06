@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const {userInsert, userRead, userUpdate, userDelete, userReadById, userReadByEmail, userReadByPhone} = require("../controllers/usercontrollers");
+const {userInsert, userRead, userUpdate, userDelete, userReadById, userReadByEmail} = require("../controllers/usercontrollers");
 
-router.post("/user-insert", userInsert);
+router.post("/user-insert", userInsert);            // http://localhost:3000/api/users/user-insert
 router.get("/user-read", userRead);
 router.put("/user-update/:id", userUpdate);
 router.delete("/user-delete/:id", userDelete);
 router.get("/user-read-by-id/:id", userReadById);
 router.get("/user-read-by-email/:email", userReadByEmail);
-router.get("/user-read-by-phone/:phone", userReadByPhone);
+// router.get("/user-read-by-phone/:phone", userReadByPhone);
 
 module.exports = router;
 
