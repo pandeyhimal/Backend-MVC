@@ -80,10 +80,10 @@ These IDs are created automatically when a new user is saved, using the pre('sav
 Middleware are functions that run before or after certain operations in Mongoose, such as:
 
 Hook	When It Runs
-pre('save')	Before saving a document
-post('save')	After a document is saved
-pre('find')	Before querying documents
-pre('remove')	Before deleting a document
+     pre('save')	Before saving a document
+     post('save')	After a document is saved
+     pre('find')	Before querying documents
+     pre('remove')	Before deleting a document
 
 These functions allow you to:
 
@@ -98,56 +98,56 @@ Trigger side-effects like sending emails, logging, etc.
 ⚙ How We Use pre('save') in This Project
 Whenever a new user is created, the following happens automatically:
 
-js
-Copy
-Edit
-userSchema.pre("save", async function (next) {
-  if (this.isNew) {
-    const { userId, customId } = await getNextSequence("userId", "USR");
-    this.userId = userId;
-    this.customId = customId;
-  }
-  next();
-});
+     js
+     Copy
+     Edit
+     userSchema.pre("save", async function (next) {
+     if (this.isNew) {
+     const { userId, customId } = await getNextSequence("userId", "USR");
+     this.userId = userId;
+     this.customId = customId;
+     }
+     next();
+     });
 🔍 Explanation
-Line	Purpose
-pre('save')	Tells Mongoose to run the function before saving the user
-this.isNew	Ensures it only runs for new users, not updates
-getNextSequence()	Gets the next number (1, 2, 3...) and formats it as USR001, USR002, etc.
-this.userId = ...	Assigns the raw number
-this.customId = ...	Assigns the formatted custom string
-next()	Continues to save the user in the database
+     Line	Purpose
+     pre('save')	Tells Mongoose to run the function before saving the user
+     this.isNew	Ensures it only runs for new users, not updates
+     getNextSequence()	Gets the next number (1, 2, 3...) and formats it as USR001, USR002, etc.
+     this.userId = ...	Assigns the raw number
+     this.customId = ...	Assigns the formatted custom string
+     next()	Continues to save the user in the database
 
 📁 Related Files and Their Purpose
-File	Description
-models/userModel.js	Contains the user schema and pre('save') hook
-models/counterModel.js	Stores the last used serial number (e.g., { id: "userId", seq: 3 })
-utils/autoIncrement.js	Reusable logic to fetch the next serial number and generate formatted ID
+     File	Description
+     models/userModel.js	Contains the user schema and pre('save') hook
+     models/counterModel.js	Stores the last used serial number (e.g., { id: "userId", seq: 3 })
+     utils/autoIncrement.js	Reusable logic to fetch the next serial number and generate formatted ID
 
 🧪 Example Output in MongoDB
-json
-Copy
-Edit
-{
-  "_id": "64ba...",
-  "userId": 7,
-  "customId": "USR007",
-  "name": "Himal Pandey",
-  "email": "himal@example.com",
-  ...
-}
+     json
+     Copy
+     Edit
+     {
+     "_id": "64ba...",
+     "userId": 7,
+     "customId": "USR007",
+     "name": "Himal Pandey",
+     "email": "himal@example.com",
+     ...
+     }
 ✅ Benefits of This Approach
-Automatically generated, human-readable IDs.
+     Automatically generated, human-readable IDs.
 
-Easy tracking of users by number (e.g., USR007).
+     Easy tracking of users by number (e.g., USR007).
 
-Reusable logic for other models (e.g., STD001 for students).
+     Reusable logic for other models (e.g., STD001 for students).
 
 🔁 Reusability
-This ID system is modular. You can use the same logic for other collections:
+     This ID system is modular. You can use the same logic for other collections:
 
-js
-Copy
-Edit
-getNextSequence("studentId", "STD"); // ➜ STD001, STD002, ...
-getNextSequence("adminId", "ADM");   // ➜ ADM001, ADM002, ...
+     js
+     Copy
+     Edit
+     getNextSequence("studentId", "STD"); // ➜ STD001, STD002, ...
+     getNextSequence("adminId", "ADM");   // ➜ ADM001, ADM002, ...
