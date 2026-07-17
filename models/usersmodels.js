@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const getNextSequence = require("../utils/autoIncrement");
 
 const userSchema = new mongoose.Schema(
   {
